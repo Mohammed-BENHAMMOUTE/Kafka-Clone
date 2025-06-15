@@ -32,11 +32,8 @@ public class Main {
         clientSocket.getOutputStream().write(res);
         
         int int_api_version = ByteBuffer.wrap(apiKey).getInt();
-
-        if(int_api_version < 0 || int_api_version >4) {
-          var error_response = ByteBuffer.allocate(2).putInt(35).array();
-          clientSocket.getOutputStream().write(error_response);
-        };
+        var error_response = ByteBuffer.allocate(2).putInt(35).array();
+        clientSocket.getOutputStream().write(error_response);
      } catch (IOException e) {
        System.out.println("IOException: " + e.getMessage());
      } finally {
