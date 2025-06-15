@@ -1,11 +1,9 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Array;
-import java.util.List;
 
 public class Main {
-  public static void main(String[] args){
+  public static void main(String[] args) throws InterruptedException {
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     System.err.println("Logs from your program will appear here!");
      ServerSocket serverSocket = null;
@@ -13,12 +11,42 @@ public class Main {
      int port = 9092;
      try {
        serverSocket = new ServerSocket(port);
-       // Since the tester restarts your program quite often, setting SO_REUSEADDR
-       // ensures that we don't run into 'Address already in use' errors
        serverSocket.setReuseAddress(true);
-    //   // Wait for connection from client.
        clientSocket = serverSocket.accept();
-       clientSocket.getOutputStream().write(new byte[]{0,0,0,0,0,0,0,7});
+       while(clientSocket.getInputStream().available() == 0) {
+           Thread.sleep(1000);
+       };
+         // Wait for client to send data
+           // I need to extract the correlation Id
+       int correlationId = 0;
+       byte[] buffer = new byte[12];
+       int bytesRead = clientSocket.getInputStream().read(buffer);
+      if (bytesRead == -1) {
+         System.out.println("No data received from client.");
+         return;
+      }else{
+//                 Extract the correlation ID from the buffer
+        correlationId = ((buffer[8] & 0xFF) << 24) | ((buffer[9] & 0xFF) << 16) |
+                        ((buffer[10] & 0xFF) << 8) | (buffer[11] & 0xFF);
+
+        System.out.println("Correlation ID: " + correlationId);
+        // send the response back to the client with the correlation ID
+          byte response[] = new byte[8];
+        response[0] = 0; response[1] = 0; response[2] = 0; response[3] = 0;
+        response[4] = (byte) ((correlationId >> 24) &0xFF);
+        response[5] = (byte) ((correlationId >> 16) &0xFF);
+        response[6] = (byte) ((correlationId >> 8) &0xFF);
+        response[7] = (byte) (correlationId & 0xFF);
+        clientSocket.getOutputStream().write(response);
+//        clientSocket.getOutputStream().write(new byte[]{0,0,0,0,});
+
+//              for (int i = 0; i < bytesRead; i++) {
+//                System.out.printf("Byte %d: %02X%n", i, buffer[i]);
+//              }
+
+
+       }
+
      } catch (IOException e) {
        System.out.println("IOException: " + e.getMessage());
      } finally {
