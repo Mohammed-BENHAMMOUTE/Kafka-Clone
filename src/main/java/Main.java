@@ -25,10 +25,18 @@ public class Main {
         byte[] apiKey = in.readNBytes(2);
         byte[] apiVersion = in.readNBytes(2);
         int correlationId = ByteBuffer.wrap(in.readNBytes(4)).getInt();
+        
 
         clientSocket.getOutputStream().write(messageSizeBytes);
         var res = ByteBuffer.allocate(4).putInt(correlationId).array();
         clientSocket.getOutputStream().write(res);
+        
+        int int_api_version = ByteBuffer.wrap(apiKey).getInt();
+
+        if(int_api_version < 0 || int_api_version >4) {
+          var error_response = ByteBuffer.allocate(4).putInt(35).array();
+          clientSocket.getOutputStream().write(error_response);
+        };
      } catch (IOException e) {
        System.out.println("IOException: " + e.getMessage());
      } finally {
