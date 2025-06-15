@@ -18,7 +18,6 @@ public class Main {
         while(clientSocket.getInputStream().available() == 0) {
             Thread.sleep(1000);
         }
-        byte[] buffer = new byte[12];
 
         BufferedInputStream in = new BufferedInputStream(clientSocket.getInputStream());
         byte[] messageSizeBytes = in.readNBytes(4);
@@ -31,9 +30,11 @@ public class Main {
         var res = ByteBuffer.allocate(4).putInt(correlationId).array();
         clientSocket.getOutputStream().write(res);
         
-        int int_api_version = ByteBuffer.wrap(apiKey).getInt();
-        var error_response = ByteBuffer.allocate(2).putInt(35).array();
-        clientSocket.getOutputStream().write(error_response);
+        short short_api_version = ByteBuffer.wrap(apiKey).getShort();
+        if (short_api_version> 4 || short_api_version<0) {
+          var error_response = ByteBuffer.allocate(2).putShort((short) 35).array();
+          clientSocket.getOutputStream().write(error_response);
+        }
      } catch (IOException e) {
        System.out.println("IOException: " + e.getMessage());
      } finally {
