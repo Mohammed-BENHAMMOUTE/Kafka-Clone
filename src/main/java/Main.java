@@ -107,6 +107,10 @@ public class Main {
             
             // Flush the output stream to ensure all data is sent
             clientSocket.getOutputStream().flush();
+            
+            // Keep the connection alive for a bit to ensure the response is fully received
+            System.err.println("Waiting for client to process response...");
+            Thread.sleep(1000);
 
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
