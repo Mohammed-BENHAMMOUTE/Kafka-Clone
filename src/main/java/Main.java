@@ -25,12 +25,20 @@ public class Main {
             byte[] apiVersion = in.readNBytes(2);
             int correlationId = ByteBuffer.wrap(in.readNBytes(4)).getInt();
 
-            // Parse the API version (not API key!)
+            // Parse the API key and version
+            short apiKeyValue = ByteBuffer.wrap(apiKey).getShort();
             short apiVersionValue = ByteBuffer.wrap(apiVersion).getShort();
             byte[] correlationBytes = ByteBuffer.allocate(4).putInt(correlationId).array();
             
+            System.err.println("Received API key: " + apiKeyValue);
             System.err.println("Received API version: " + apiVersionValue);
             System.err.println("Correlation ID: " + correlationId);
+            
+            // Check if this is an APIVersions request (API key 18)
+            if (apiKeyValue != 18) {
+                System.err.println("Error: Expected API key 18 (APIVersions), got: " + apiKeyValue);
+                return;
+            }
             
             // Create APIVersions response
             if (apiVersionValue > 4 || apiVersionValue < 0) {
@@ -45,9 +53,9 @@ public class Main {
                 clientSocket.getOutputStream().write(emptyTaggedBuffer);
             } else {
                 // Success response: full APIVersions format
-                // Calculate total response length:
-                // 4 bytes correlation_id + 2 bytes error_code + 1 byte num_api_keys + 
-                // 6 bytes api_key_data (2+2+2) + 1 byte TAG_BUFFER + 4 bytes throttle_time + 1 byte TAG_BUFFER = 21 bytes
+                System.err.println("Sending success response for API version: " + apiVersionValue);
+                
+                // Total response length: 4 bytes correlation_id + 17 bytes response body = 21 bytes
                 byte[] lengthBytes = ByteBuffer.allocate(4).putInt(21).array();
                 
                 // Error code (0 = success)
@@ -70,6 +78,8 @@ public class Main {
                 // Final tagged buffer (empty)
                 byte[] taggedBuffer2 = new byte[]{0}; // 0 tagged fields
                 
+                System.err.println("Total response length: 21 bytes");
+                
                 // Send the complete response
                 clientSocket.getOutputStream().write(lengthBytes);
                 clientSocket.getOutputStream().write(correlationBytes);
@@ -81,6 +91,8 @@ public class Main {
                 clientSocket.getOutputStream().write(taggedBuffer1);
                 clientSocket.getOutputStream().write(throttleTimeBytes);
                 clientSocket.getOutputStream().write(taggedBuffer2);
+                
+                System.err.println("Response sent successfully");
             }
             
             // Flush the output stream to ensure all data is sent
