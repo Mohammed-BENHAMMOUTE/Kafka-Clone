@@ -61,8 +61,8 @@ public class Main {
                 // Error code (0 = success)
                 byte[] errorCodeBytes = ByteBuffer.allocate(2).putShort((short) 0).array();
                 
-                // Number of API keys (1 for APIVersions only)
-                byte[] numApiKeysBytes = new byte[]{1}; // INT8 = 1 byte
+                // Number of API keys (2 = 1 element, because 0=null, 1=empty, 2=1 element)
+                byte[] numApiKeysBytes = new byte[]{2}; // INT8 = 1 byte, value = 2 for 1 API key
                 
                 // API key entry: api_key=18, min_version=0, max_version=4
                 byte[] apiKeyBytes = ByteBuffer.allocate(2).putShort((short) 18).array(); // api_key = 18 (APIVersions)
