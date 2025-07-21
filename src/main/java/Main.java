@@ -21,15 +21,25 @@ public class Main {
 
             BufferedInputStream in = new BufferedInputStream(clientSocket.getInputStream());
             byte[] messageSizeBytes = in.readNBytes(4);
-            byte[] apiKey = in.readNBytes(2);
-            byte[] apiVersion = in.readNBytes(2);
-            int correlationId = ByteBuffer.wrap(in.readNBytes(4)).getInt();
-
+            int messageSize = ByteBuffer.wrap(messageSizeBytes).getInt();
+            
+            // Read the entire message based on the message size
+            byte[] fullMessage = in.readNBytes(messageSize);
+            ByteBuffer messageBuffer = ByteBuffer.wrap(fullMessage);
+            
+            // Parse the message
+            byte[] apiKey = new byte[2];
+            messageBuffer.get(apiKey);
+            byte[] apiVersion = new byte[2];
+            messageBuffer.get(apiVersion);
+            int correlationId = messageBuffer.getInt();
+            
             // Parse the API key and version
             short apiKeyValue = ByteBuffer.wrap(apiKey).getShort();
             short apiVersionValue = ByteBuffer.wrap(apiVersion).getShort();
             byte[] correlationBytes = ByteBuffer.allocate(4).putInt(correlationId).array();
             
+            System.err.println("Message size: " + messageSize + " bytes");
             System.err.println("Received API key: " + apiKeyValue);
             System.err.println("Received API version: " + apiVersionValue);
             System.err.println("Correlation ID: " + correlationId);
