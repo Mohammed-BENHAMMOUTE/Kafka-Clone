@@ -66,8 +66,9 @@ public class Main {
                 System.err.println("Sending success response for API version: " + apiVersionValue);
                 
                 // Response format: correlation_id + error_code + num_api_keys + api_key_data + tag_buffer + throttle_time + tag_buffer
-                // Calculate exact byte count: 4 + 2 + 1 + 6 + 1 + 4 + 1 = 19 bytes
-                byte[] lengthBytes = ByteBuffer.allocate(4).putInt(17).array(); // Length excludes correlation_id
+                // Body bytes: 2 + 1 + 2 + 2 + 2 + 1 + 4 + 1 = 15 bytes
+                // Total response: 4 (correlation_id) + 15 (body) = 19 bytes
+                byte[] lengthBytes = ByteBuffer.allocate(4).putInt(19).array(); // Total length including correlation_id
                 
                 // Error code (0 = success)
                 byte[] errorCodeBytes = ByteBuffer.allocate(2).putShort((short) 0).array();
@@ -89,7 +90,7 @@ public class Main {
                 // Final tagged buffer (empty)
                 byte[] taggedBuffer2 = new byte[]{0}; // 0 tagged fields
                 
-                System.err.println("Total response length: 17 bytes (excluding correlation_id)");
+                System.err.println("Total response length: 19 bytes");
                 
                 // Send the complete response
                 clientSocket.getOutputStream().write(lengthBytes);
