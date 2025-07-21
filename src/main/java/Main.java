@@ -29,6 +29,9 @@ public class Main {
             short apiVersionValue = ByteBuffer.wrap(apiVersion).getShort();
             byte[] correlationBytes = ByteBuffer.allocate(4).putInt(correlationId).array();
             
+            System.err.println("Received API version: " + apiVersionValue);
+            System.err.println("Correlation ID: " + correlationId);
+            
             // Create APIVersions response
             if (apiVersionValue > 4 || apiVersionValue < 0) {
                 // Error response: just correlation_id + error_code + empty tagged buffer
@@ -79,6 +82,9 @@ public class Main {
                 clientSocket.getOutputStream().write(throttleTimeBytes);
                 clientSocket.getOutputStream().write(taggedBuffer2);
             }
+            
+            // Flush the output stream to ensure all data is sent
+            clientSocket.getOutputStream().flush();
 
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
