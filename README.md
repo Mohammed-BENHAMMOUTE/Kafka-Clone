@@ -1,35 +1,48 @@
 [![progress-banner](https://backend.codecrafters.io/progress/kafka/a7660190-054a-402b-bb8e-55cf30b29f80)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
 
-This is a starting point for Java solutions to the
-["Build Your Own Kafka" Challenge](https://codecrafters.io/challenges/kafka).
+# Build Your Own Kafka in Java
 
-In this challenge, you'll build a toy Kafka clone that's capable of accepting
-and responding to APIVersions & Fetch API requests. You'll also learn about
-encoding and decoding messages using the Kafka wire protocol. You'll also learn
-about handling the network protocol, event loops, TCP sockets and more.
+This repository contains a Java implementation of a simplified Kafka clone, built as part of the ["Build Your Own Kafka" Challenge](https://codecrafters.io/challenges/kafka) on CodeCrafters.
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+## About The Project
 
-# Passing the first stage
+The goal of this challenge is to build a toy Kafka clone that can handle `APIVersions` and `Fetch` API requests. Along the way, you'll learn about:
 
-The entry point for your Kafka implementation is in `src/main/java/Main.java`.
-Study and uncomment the relevant code, and push your changes to pass the first
-stage:
+* The Kafka wire protocol for message encoding and decoding.
+* Handling network protocols and TCP sockets.
+* Implementing event loops.
 
-```sh
-git commit -am "pass 1st stage" # any msg
-git push origin master
-```
+**Note**: If you're viewing this repo on GitHub, head over to [codecrafters.io](https://codecrafters.io) to try the challenge.
 
-That's all!
+## Getting Started
 
-# Stage 2 & beyond
+Follow these instructions to get a copy of the project up and running on your local machine.
 
-Note: This section is for stages 2 and beyond.
+### Prerequisites
 
-1. Ensure you have `mvn` installed locally
-1. Run `./your_program.sh` to run your Kafka broker, which is implemented in
-   `src/main/java/Main.java`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+Make sure you have Maven installed on your system.
+
+* **mvn**
+
+  ```sh
+  mvn --version
+  ```
+
+### Running the Broker
+
+1. Execute the `your_program.sh` script to start the Kafka broker.
+
+   ```sh
+   ./your_program.sh
+   ```
+
+   The broker is implemented in `src/main/java/Main.java`.
+
+2. To submit your solution to CodeCrafters, commit your changes and push to the `master` branch.
+
+   ```sh
+   git commit -am "Implement feature"
+   git push origin master
+   ```
+
+   Test output will be streamed to your terminal.
