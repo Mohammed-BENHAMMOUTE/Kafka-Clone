@@ -1,4 +1,3 @@
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,7 +12,7 @@ public class Main {
             serverSocket.setReuseAddress(true);
             System.err.println("Kafka server listening on port " + port);
             
-            // Accept multiple clients concurrently
+            // Accepting multiple clients concurrently
             while (true) {
                 try {
                     // This blocks until a new client connects
